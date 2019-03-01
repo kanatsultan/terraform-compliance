@@ -8,12 +8,14 @@ from shutil import rmtree
 from hcl import loads
 
 
-def load_tf_files(tf_directory):
+def load_tf_files(tf_directory, enable_modules):
     result = False
     print('Reading terraform files.')
 
-    if isdir('{}/.terraform'.format(tf_directory)):
+    if isdir('{}/.terraform'.format(tf_directory)) and not enable_modules:
         rmtree('{}/.terraform'.format(tf_directory))
+    else:
+        print('Module initialisation enabled.')
 
     while result is False:
         try:

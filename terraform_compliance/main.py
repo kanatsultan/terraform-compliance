@@ -9,7 +9,7 @@ except ImportError as e:
 
 
     def pip(action, package, params=None):
-        print '{}ing {}..'.format(action, package)
+        print('{}ing {}..'.format(action, package))
 
         if action == 'uninstall':
             cmds = [executable, "-m", "pip", action, '--yes', package]
@@ -18,15 +18,15 @@ except ImportError as e:
 
         subprocess.call(cmds)
 
-    print "Fixing the problem on radish and radish-bdd"
+    print('Fixing the problem on radish and radish-bdd')
     pip('uninstall', 'radish-bdd')
     pip('uninstall', 'radish')
     pip('install', 'radish==0.1.10')
     pip('install', 'radish-bdd==0.8.6')
 
-    print "~"*40
-    print " Please run terraform-compliance again."
-    print "~"*40
+    print('~'*40)
+    print(' Please run terraform-compliance again.')
+    print('~'*40)
     exit(1)
 
 from tempfile import mkdtemp
@@ -39,7 +39,7 @@ from terraform_compliance.common.exceptions import TerraformComplianceInvalidCon
 
 
 __app_name__ = "terraform-compliance"
-__version__ = "0.5.5"
+__version__ = "0.5.6"
 
 
 
@@ -50,14 +50,16 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
                                                             description="BDD Test Framework for Hashicorp terraform")):
     args = arghandling
     parser = argparser
-    parser.add_argument("--features", "-f", dest="features", metavar='feature_directory', action=ReadableDir,
-                        help="Directory consists of BDD features", required=True)
-    parser.add_argument("--tfdir", "-t", dest="tf_dir", metavar='terraform_directory', action=ReadableDir,
-                        help="Directory (or git repository with 'git:' prefix) consists of Terraform Files",
+    parser.add_argument('--features', '-f', dest='features', metavar='feature_directory', action=ReadableDir,
+                        help='Directory consists of BDD features', required=True)
+    parser.add_argument('--tfdir', '-t', dest='tf_dir', metavar='terraform_directory', action=ReadableDir,
+                        help='Directory (or git repository with "git:" prefix) consists of Terraform Files',
                         required=True)
-    parser.add_argument("--identity", "-i", dest="ssh_key", metavar='ssh_private_key', type=str, nargs='?',
-                        help="SSH Private key that will be use on git authentication.", required=False)
-    parser.add_argument("--version", "-v", action="version", version=__version__)
+    parser.add_argument('--identity', '-i', dest='ssh_key', metavar='ssh_private_key', type=str, nargs='?',
+                        help='SSH Private key that will be use on git authentication.', required=False)
+    parser.add_argument('--modules', '-m', dest='enable_modules', action='store_true', required=False,
+                        help='Enabled module initialisation. Requires a "terraform init" on the directory.')
+    parser.add_argument('--version', '-v', action='version', version=__version__)
 
     _, radish_arguments = parser.parse_known_args(namespace=args)
 
@@ -103,7 +105,7 @@ def cli(arghandling=ArgHandling(), argparser=ArgumentParser(prog=__app_name__,
     commands.extend(radish_arguments)
 
     try:
-        load_tf_files(tf_directory)
+        load_tf_files(tf_directory, args.enable_modules)
     except TerraformComplianceInvalidConfig:
         print exc_info()[1]
         exit(1)
