@@ -1,5 +1,5 @@
 from sys import exc_info, exit
-from os.path import isdir
+from os.path import isdir, exists
 from terraform_compliance import Validator
 from terraform_validate.terraform_validate import TerraformSyntaxException
 from terraform_compliance.common.exceptions import TerraformComplianceInvalidConfig
@@ -10,12 +10,16 @@ from hcl import loads
 
 def load_tf_files(tf_directory, enable_modules):
     result = False
-    print('Reading terraform files.')
 
     if isdir('{}/.terraform'.format(tf_directory)) and not enable_modules:
         rmtree('{}/.terraform'.format(tf_directory))
+    elif not exists('{}/.terraform'.format(tf_directory)) and enable_modules:
+        print('ERROR: Looks like the directory is not initialised. Try to run "terraform init" first.')
+        exit(1)
     else:
         print('Module initialisation enabled.')
+
+    print('Reading terraform files.')
 
     while result is False:
         try:
