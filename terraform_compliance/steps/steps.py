@@ -231,7 +231,7 @@ def its_value_condition_match_the_search_regex_regex(step_obj, condition, search
                                   search_regex,
                                   value)
                 elif condition == 'must not':
-                    assert matches is not None, \
+                    assert matches is None, \
                         '{} property in {} does not match with {} regex. It is set to {} instead.' \
                         ''.format(prop.property_name,
                                   prop.resource_name,
